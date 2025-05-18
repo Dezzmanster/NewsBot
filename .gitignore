@@ -68,3 +68,6 @@ Thumbs.db
 # Прочие директории
 notebooks/scum
 data
+
+# Исходники инструкций и прочих файлов
+docs/*.docx
