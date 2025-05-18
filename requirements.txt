@@ -1,0 +1,12 @@
+pydantic~=2.11.4
+dotenv~=0.9.9
+python-dotenv~=1.1.0
+langchain==0.3.25
+telethon==1.40.0
+loguru==0.7.3
+aiogram==3.20.0.post0
+langgraph==0.4.5
+langsmith~=0.3.42
+langchain-core~=0.3.60
+# aiogram-datepicker==0.0.8
+aiogram-calendar==0.6.0

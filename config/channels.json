@@ -1,0 +1,7 @@
+{
+  "default": [
+    "@sample_channel1",
+    "@sample_channel2",
+    "@sample_channel3"
+  ]
+}
