@@ -19,7 +19,7 @@ def format_report_for_telegram(report):
     report = report.model_dump()
     formatted_text = f"📊 *{report['title']}*\n\n"
     formatted_text += f"📅 Дата: {safe_parse_date(report['date']).strftime('%d.%m.%Y %H:%M')}\n\n"
-    formatted_text += f"📝 *Общая сводка:*\n{report['overall_summary']}\n\n"
+    formatted_text += f"📝 *Общая сводка:*\n\n\n{report['overall_summary']}\n\n"
     formatted_text += "📌 *Сводки по категориям:*\n\n"
     for category in report['categories']:
         formatted_text += f"*{category['category']}* ({category['news_count']} новостей):\n"

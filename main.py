@@ -32,9 +32,9 @@ user_channels = dict()
 
 main_kb = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="📋 Список каналов"), KeyboardButton(text="ℹ️ Помощь")],
-        [KeyboardButton(text="➕ Добавить канал"), KeyboardButton(text="❌ Удалить канал")],
         [KeyboardButton(text="📰 Получить сводку последних новостей")],
+        [KeyboardButton(text="ℹ️ Помощь"), KeyboardButton(text="📋 Список каналов")],
+        [KeyboardButton(text="➕ Добавить канал"), KeyboardButton(text="❌ Удалить канал")],
     ],
     resize_keyboard=True
 )

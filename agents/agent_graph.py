@@ -36,6 +36,15 @@ from config.settings import (
     DEFAULT_LIMIT_PER_CHANNEL,
 )
 
+# Импорт необходимых промптов
+from prompts.agents_prompts import (
+    ANALYZER_PROMPT,
+    CLASSIFIER_PROMPT,
+    SUMMARIZER_PROMPT,
+    REPORTER_PROMPT,
+    ERROR_PROMPT
+)
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -120,13 +129,7 @@ def analyzer_agent(state: GraphState) -> GraphState:
         # Создаем модель со структурированным выводом
         structured_gigachat = gigachat.with_structured_output(SimpleAnalyzerOutput)
 
-        prompt_template = """
-        Проанализируй следующий текст и предоставь структурированный анализ:
-
-        Текст: {text}
-        """
-
-        prompt = ChatPromptTemplate.from_template(prompt_template)
+        prompt = ChatPromptTemplate.from_template(ANALYZER_PROMPT)
 
         for news in state["collected_news"]:
             chain = prompt | structured_gigachat
@@ -139,7 +142,6 @@ def analyzer_agent(state: GraphState) -> GraphState:
                     news=news
                 )
                 # Добавляем новость к анализу
-                # analysis.news = news
                 analyzed_news.append(full_analysis)
             except Exception as analysis_error:
                 logger.warning(f"Error in analysis: {analysis_error}. Creating fallback analysis.")
@@ -167,21 +169,7 @@ def classifier_agent(state: GraphState) -> GraphState:
     try:
         structured_gigachat = gigachat.with_structured_output(CategoryOutput)
 
-        prompt_template = """
-        Определи категорию для следующей новости. Выбери одну из категорий:
-        - Политика
-        - Экономика
-        - Технологии
-        - Наука
-        - Спорт
-        - Культура
-        - Общество
-        - Происшествия
-
-        Новость: {text}
-        """
-
-        prompt = ChatPromptTemplate.from_template(prompt_template)
+        prompt = ChatPromptTemplate.from_template(CLASSIFIER_PROMPT)
 
         categorized_news = {}
 
@@ -234,25 +222,14 @@ def summarizer_agent(state: GraphState) -> GraphState:
     try:
         # Создаем модель со структурированным выводом
         structured_gigachat = gigachat.with_structured_output(CategorySummary)
+        prompt = ChatPromptTemplate.from_template(SUMMARIZER_PROMPT)
+        chain = prompt | structured_gigachat
 
         summaries = []
 
         for category, news_list in state["categorized_news"].items():
             all_texts = [item.analysis.news.text for item in news_list]
-
             combined_text = "\n\n".join(all_texts)
-
-            prompt_template = """
-            Сделай краткую сводку из следующих новостей категории "{category}" (всего {count} новостей).
-            Сводка должна быть до 300 символов.
-
-            Новости:
-            {text}
-            """
-
-            prompt = ChatPromptTemplate.from_template(prompt_template)
-
-            chain = prompt | structured_gigachat
 
             # Выполняем суммаризацию
             try:
@@ -311,8 +288,7 @@ def reporter_agent(state: GraphState) -> GraphState:
 
         # Генерируем общую сводку
         combined_text = "\n\n".join(all_summaries)
-        prompt_template = "Сделай общую сводку по следующим категориям новостей:\n{text}"
-        prompt = ChatPromptTemplate.from_template(prompt_template)
+        prompt = ChatPromptTemplate.from_template(REPORTER_PROMPT)
         chain = prompt | gigachat | StrOutputParser()
 
         # Выполняем генерацию общей сводки
@@ -354,7 +330,6 @@ def error_handler(state: GraphState) -> GraphState:
         categories=[],
         overall_summary=f"Произошли ошибки: {', '.join(state['errors'])}"
     )
-
     return {**state, "report": error_report}
 
 
