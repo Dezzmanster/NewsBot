@@ -70,4 +70,4 @@ notebooks/scum
 data
 
 # Исходники инструкций и прочих файлов
-docs/*.docx
+*/*.docx
